@@ -1,13 +1,7 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-    userId:{
-        type: Number,
-        unique: true,
-        required:true,
-        default:1000000000,
-        minlength:10
-    },
+const adminSchema = new mongoose.Schema({
+    
     firstName:{
         type: String,
         required: true,
@@ -20,11 +14,12 @@ const userSchema = new mongoose.Schema({
         minlength:2,
         maxlength:20
     },
-    userName:{
+    username:{
         type: String,
         minlength:4,
         maxlength:20,
-        required:true
+        required:true,
+        unique: true
     },
     email:{
         type: String,
@@ -38,7 +33,6 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength:10
     },
-   
     
     phoneNumber:{
         type: String,
@@ -47,15 +41,6 @@ const userSchema = new mongoose.Schema({
         maxlength:10
     },
     
-    registrationDate:{
-        type: Date,
-        required:true
-    },
-
-    notification:{
-        type: String,
-    },
-  
     is_verified:{
         type: Boolean,
         default: false
@@ -64,13 +49,12 @@ const userSchema = new mongoose.Schema({
         type:String,
         default:''
     },
-    is_blocked:{
+    is_admin:{
         type:Boolean,
-        default:false
-        
+        default:true
     }
     
-})
+    
+});
 
-module.exports = mongoose.model('User', userSchema);
-
+module.exports = mongoose.model('admins', adminSchema);

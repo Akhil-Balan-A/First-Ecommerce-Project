@@ -30,7 +30,7 @@ const adminController = require('../controllers/adminController')
 
 admin_route.get('/', auth.isLogout, asyncHandler(adminController.loadLogin));
 admin_route.post('/', asyncHandler(adminController.verifyLogin));
-admin_route.get('/home', auth.isLogin, asyncHandler(adminController.loadDashboard));
+admin_route.get('/home', auth.isLogin, asyncHandler(adminController.loadAdminHome));
 admin_route.get('/logout', auth.isLogin, asyncHandler(adminController.logout));
 admin_route.get('/forget', auth.isLogout , asyncHandler(adminController.forgetLoad));
 admin_route.post('/forget', asyncHandler(adminController.forgetVerify));
@@ -44,6 +44,12 @@ admin_route.get("/Unblock-user/:id",auth.isLogin,asyncHandler(adminController.un
 
 admin_route.get("/Products",auth.isLogin,asyncHandler(adminController.productView))
 admin_route.get("/addProduct",auth.isLogin,asyncHandler(adminController.addProduct))
+admin_route.get("/register",auth.isLogout,asyncHandler(adminController.loadRegister))
+admin_route.post("/register",adminController.insertAdmin)
+admin_route.get('/verify', asyncHandler(adminController.verifyMail))
+admin_route.get('/verification',asyncHandler(adminController.emailVerificationLoad))
+admin_route.post('/verification',adminController.sendVerificationLink)
+
 
 admin_route.post('*',function(req,res){res.redirect('/admin');})
  

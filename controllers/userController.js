@@ -141,7 +141,7 @@ const insertUser = async(req,res)=>{
             password:spassword,
             registrationDate:registration_date,
             is_verified:false,
-            is_admin:0
+            
 
         });
 

@@ -1,10 +1,51 @@
-  const Admin = require("../models/userModel");
+  const Admin = require("../models/adminModel");
   const User = require('../models/userModel');
   const bcrypt = require("bcrypt");
-  const asyncHandler = require("express-async-handler");
   const randomstring = require("randomstring");
   const nodemailer = require("nodemailer");
   const productModel = require("../models/ProductModel")
+
+
+  //for send mail
+
+const sendVerifyMail = async(name,email,admin_id)=>{
+  try{
+      const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure:false,
+          requireTLS:true, 
+          auth:{
+              user:process.env.EMAIL,
+              pass: process.env.PASS
+          }
+      });
+      const mailOptions = {
+          from:process.env.EMAIL,
+          to: email,
+          subject:'Welcome to Boult Audio  - Verify Your Mail',
+          html:`
+          <p>Hi ${name},</p>
+          <p>Please click here to <a href="http://127.0.0.1:3000/admin/verify?id=${admin_id}">Verify</a> your email.</p>
+          <p>If you didn't sign up for an account with Boult Audio, please disregard this email.</p>
+          <p>If you have any questions or need assistance, please don't hesitate to reach out to our support team at support@boultaudio.com.</p>
+          <p>Thank you for choosing Boult Audio.</p>
+          <p>Sincerely, The Boult Audio Team</p>
+      `
+      }
+      transporter.sendMail(mailOptions,function(error,info){
+          if (error){
+              console.log(error.message)
+          }else{
+              console.log('Email sent: ' + info.response);
+
+          }
+      })
+  }catch(error){
+      console.log(error.message);
+  }
+}
+
 
   const securePassword = async (password) => {
     try {
@@ -113,8 +154,12 @@
           if (adminData.is_admin === false) {
             res.render("AdminLogin", { message: "Email and password is incorrect" });
           } else {
-            req.session.admin_id = adminData._id;
+            if(adminData.is_verified===true){
+              req.session.admin_id = adminData._id;
             res.redirect("/admin/home");
+            }else{
+              res.render("AdminLogin",{message:"Please Verify your Email"})
+            }
           }
         } else {
           res.render("AdminLogin", { message: "Email and password is incorrect" });
@@ -127,8 +172,9 @@
     }
   };
 
-  const loadDashboard = async (req, res) => {
+  const loadAdminHome = async (req, res) => {
     try {
+  
       const adminData = await Admin.findById({_id:req.session.admin_id})
       res.render("AdminHome",{admin:adminData});
     } catch (error) {
@@ -208,7 +254,7 @@
         { $set: { password: securePass, token: "" } }
       );
 
-      res.render("AdminLogin");
+      res.render("AdminForget-password",{ admin_id:"undefined",message:"Successfully updated the Password. Please login"});
     } catch (error) {
       console.log(error.message);
     }
@@ -227,7 +273,7 @@
 
       const limit = 2;
 
-      const userData = await Admin.find({is_admin:false,
+      const userData = await User.find({
         $or:[
           {firstName:{$regex:'.*'+search+'.*',$options:'i'}},
           {phoneNumber:{$regex:'.*'+search+'.*',$options:'i'}},
@@ -238,7 +284,7 @@
       .exec();
 
 
-      const count = await Admin.find({is_admin:false,
+      const count = await User.find({
         $or:[
           {firstName:{$regex:'.*'+search+'.*',$options:'i'}},
           {phoneNumber:{$regex:'.*'+search+'.*',$options:'i'}},
@@ -319,7 +365,7 @@
       const userData = await user.save();
       if(userData){
         addUserMail(firstName,email,password,userData._id)
-        res.redirect('/admin/dashboard');
+        res.render('new-user',{message:"Successfully added user and User credential send to the email, Please verify email to access the website"});
       }else{
         res.render('new-user',{message:"Something went wrong"})
       }
@@ -375,11 +421,100 @@ const  addProductPost =async (req,res)=>{
     }
   }
 
+  const loadRegister = async(req,res)=>{
+    try{
+
+      res.render('adminRegistration')
+    }catch(error){
+      console.log(error.message);
+    }
+    
+  }
+
+  const insertAdmin = async(req,res)=>{
+    try{
+        // to check the email already in user or not.
+        const existingAdmin = await Admin.findOne({email:req.body.email})
+          if (existingAdmin){
+                return res.render('Adminregistration',{message:"Email already in Use!"})
+          }
+            const user_name = req.body.firstName +''+req.body.lastName; //compines first and last name.
+            const spassword = await securePassword(req.body.password);
+            
+        const newAdmin = new Admin({
+            username:user_name,
+            firstName:req.body.firstName,
+            lastName:req.body.lastName,
+            email:req.body.email,
+            phoneNumber:req.body.phoneNumber,
+            password:spassword,
+            is_verified:false,
+            is_admin:true
+
+        });
+
+        const adminData = await newAdmin.save();
+        if (adminData){
+            sendVerifyMail(req.body.firstName,req.body.email,adminData._id)
+            res.render('adminRegistration',{message:"Your registration has been successful. Please verify Your Mail"});
+        }else{
+            res.render('adminRegistration',{message:"Your registration has been failed"});
+        }
+
+    }catch(error){
+        console.log(error.message);
+    }
+}
+
+const verifyMail = async(req,res)=>{
+  try{
+      const mailVerification = await Admin.updateOne({_id:req.query.id},{$set:{is_verified:true}})
+      console.log(mailVerification);
+      res.render("email-verified")
+  }catch(error){
+      console.log(error.message);
+  }
+}
+
+
+const emailVerificationLoad = async(req,res)=>{
+  try{
+      res.render('email-verification');
+
+  }catch(error){
+      console.log(error.message);
+  }
+}
+
+const sendVerificationLink = async(req,res)=>{
+  try{
+      const email = req.body.email;
+      const adminData = await Admin.findOne({email:email});
+      if(adminData){
+        if(adminData.is_verified===false){
+          
+          sendVerifyMail(adminData.firstName,adminData.email,adminData._id);
+          res.render('email-verification',{message:"Resend Verification mail send to your mail id, Please Check"})
+
+        }else{
+          res.render('email-verification',{message:"This email id is already verified!. so not need further verification"})
+
+        }
+           
+      }else{
+          res.render('email-verification',{message:"This email is not Registered"})
+      }
+
+  }catch(error){
+      console.log(error.message);
+  }
+}
+
 
   module.exports = {
     loadLogin,
     verifyLogin,
-    loadDashboard,
+    loadAdminHome,
     logout,
     forgetLoad,
     forgetVerify,
@@ -394,6 +529,14 @@ const  addProductPost =async (req,res)=>{
 
     addProduct,
     productView,
-    addProductPost
+    addProductPost,
+
+    loadRegister,
+    insertAdmin,
+    verifyMail,
+    emailVerificationLoad,
+    sendVerificationLink
+    
     
   };
+

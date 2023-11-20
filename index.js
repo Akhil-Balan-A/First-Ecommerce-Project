@@ -4,6 +4,7 @@ const { notFound, errorHandler } = require('./middlewares/errorHandler');
 const dbConnect = require('./config/dbConnect')
 dbConnect();
 
+
 const app = express();
 
 app.use(express.static('public'))
@@ -14,6 +15,7 @@ app.use((req, res, next) => {
     );
     next();
 });
+
 
 //for user routes.
 const userRoute = require('./routes/userRoute');
