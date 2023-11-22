@@ -3,7 +3,7 @@
   const bcrypt = require("bcrypt");
   const randomstring = require("randomstring");
   const nodemailer = require("nodemailer");
-  const productModel = require("../models/ProductModel")
+  const productModel = require("../models/productModel")
 
 
   //for send mail
@@ -260,7 +260,7 @@ const sendVerifyMail = async(name,email,admin_id)=>{
     }
   };
 
-  const adminDashboard = async(req,res)=>{
+  const userManagement = async(req,res)=>{
     try{
       var search = '';
       if(req.query.search){
@@ -293,7 +293,7 @@ const sendVerifyMail = async(name,email,admin_id)=>{
       }).countDocuments();
 
 
-      res.render('adminDashboard',{
+      res.render('users',{
         users:userData,
         totalPages:Math.ceil(count/limit),
         currentPage : page
@@ -520,7 +520,7 @@ const sendVerificationLink = async(req,res)=>{
     forgetVerify,
     forgetPasswordLoad,
     resetPassword,
-    adminDashboard,
+    userManagement,
     newUserLoad,
     addUser,
     addUserMail,

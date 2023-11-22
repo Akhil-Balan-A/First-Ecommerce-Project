@@ -1,7 +1,7 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
-const productModel = require("../models/ProductModel")
+const productModel = require("../models/productModel")
 
 const randomstring = require('randomstring');
 const securePassword = async(password)=>{
