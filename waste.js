@@ -7,7 +7,6 @@
 //     </div>
 // <% } %>
 
-
 // <!--flash message-->
 // <%- messages('messages', locals) %>
 
