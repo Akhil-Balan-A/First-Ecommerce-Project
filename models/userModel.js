@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         lowercase: true,
-        match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+        // match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
     },
     password:{
         type: String,
@@ -43,17 +43,12 @@ const userSchema = new mongoose.Schema({
     phoneNumber:{
         type: String,
         required: true,
-        minlength:10,
-        maxlength:10
+        
     },
     
     registrationDate:{
         type: Date,
         required:true
-    },
-
-    notification:{
-        type: String,
     },
   
     is_verified:{
@@ -68,9 +63,27 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:false
         
-    }
+    },
+    defaultPaymentMethod: {
+        type: String,
+        enum:['Credit or Debit card', 'Net Banking', 'Stripe', 'Cash on Delivery'],
+        default:'Cash on Delivery',
     
-})
 
-module.exports = mongoose.model('User', userSchema);
+    },
+    rememberToken: 
+    { type: String },
+    addresses: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address'
+    }],
+    orders: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'orders'
+    }],
+
+    
+},{timestamps:true});
+
+module.exports = mongoose.model('Users', userSchema);
 

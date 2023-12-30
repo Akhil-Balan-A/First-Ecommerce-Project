@@ -1,0 +1,38 @@
+<%- include('../layouts/header') %>
+<title>Edit Name</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h3 class="mb-4">Edit Name</h3>
+        <% if (typeof message !== 'undefined') { %>
+            <% if(color==='danger') { %>
+                <div class="alert alert-danger text-center" role="alert">
+                    <p><%- message %></p>
+                </div>
+            <% } else { %>
+                <div class="alert alert-success text-center" role="alert">
+                    <p><%- message %></p>
+                </div>
+            <% } %>
+        <% } %>
+
+        <!-- Edit Name Form -->
+        <form action="/edit-name" method="post">
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName" value="<%= user.firstName %>" required>
+                </div>
+
+                <div class="mb-3 col-md-6">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName" value="<%= user.lastName %>" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update Name</button>
+            <a href="/Login&Security" class="btn btn-primary">Go Back</a>
+        </form>
+    </div>
+<br><br><br>
+<%- include('../layouts/footer') %>

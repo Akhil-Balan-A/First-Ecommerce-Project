@@ -17,16 +17,15 @@ const adminSchema = new mongoose.Schema({
     username:{
         type: String,
         minlength:4,
-        maxlength:20,
+        maxlength:50,
         required:true,
-        unique: true
     },
     email:{
         type: String,
         required: true,
         unique: true,
         lowercase: true,
-        match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+        // match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
     },
     password:{
         type: String,
@@ -35,7 +34,7 @@ const adminSchema = new mongoose.Schema({
     },
     
     phoneNumber:{
-        type: String,
+        type: Number,
         required: true,
         minlength:10,
         maxlength:10

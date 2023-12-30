@@ -3,7 +3,7 @@
   const bcrypt = require("bcrypt");
   const randomstring = require("randomstring");
   const nodemailer = require("nodemailer");
-  const productModel = require("../models/productModel")
+  const Order = require('../models/orderModel')
 
 
   //for send mail
@@ -152,31 +152,31 @@ const sendVerifyMail = async(name,email,admin_id)=>{
         const passwordMatch = await bcrypt.compare(password, adminData.password);
         if (passwordMatch) {
           if (adminData.is_admin === false) {
-            res.render("AdminLogin", { message: "Email and password is incorrect" });
+            res.render("AdminLogin", { message: "Email and password is incorrect",color:"danger"});
           } else {
             if(adminData.is_verified===true){
               req.session.admin_id = adminData._id;
-            res.redirect("/admin/home");
+            res.redirect("/admin/dashboard");
             }else{
-              res.render("AdminLogin",{message:"Please Verify your Email"})
+              res.render("AdminLogin",{message:"Please Verify your Email",color:"danger"})
             }
           }
         } else {
-          res.render("AdminLogin", { message: "Email and password is incorrect" });
+          res.render("AdminLogin", { message: "Email and password is incorrect",color:"danger" });
         }
       } else {
-        res.render("AdminLogin", { message: "Email and password is incorrect" });
+        res.render("AdminLogin", { message: "Email and password is incorrect",color:"danger" });
       }
     } catch (error) {
       console.log(error.message);
     }
   };
 
-  const loadAdminHome = async (req, res) => {
+  const loadAdminDashboard = async (req, res) => {
     try {
   
       const adminData = await Admin.findById({_id:req.session.admin_id})
-      res.render("AdminHome",{admin:adminData});
+      res.render("AdminDashboard",{admin:adminData,currentPage:'dashboard'});
     } catch (error) {
       console.log(error.message);
     }
@@ -205,7 +205,7 @@ const sendVerifyMail = async(name,email,admin_id)=>{
       if (adminData) {
         if (adminData.is_admin === false) {
           res.render("AdminForget", {
-            message: "Email is incorrect or not an admin email",
+            message: "Email is incorrect or not an admin email",color:"danger"
           });
         } else {
           const randomString = randomstring.generate();
@@ -219,11 +219,11 @@ const sendVerifyMail = async(name,email,admin_id)=>{
             randomString
           );
           res.render("AdminForget", {
-            message: "Please check your mail to reset your password",
+            message: "Please check your mail to reset your password",color:'success'
           });
         }
       } else {
-        res.render("AdminForget", { message: "Email is incorrect" });
+        res.render("AdminForget", { message: "Email is incorrect",color:"danger" });
       }
     } catch (error) {
       console.log(error.message);
@@ -237,7 +237,7 @@ const sendVerifyMail = async(name,email,admin_id)=>{
       if (tokenData) {
         res.render("AdminForget-password", { admin_id: tokenData._id });
       } else {
-        res.render("404", { message: "Invalid Link" });
+        res.render("404", { message: "Invalid Link",color:"danger" });
       }
     } catch (error) {
       console.log(error.message);
@@ -254,7 +254,8 @@ const sendVerifyMail = async(name,email,admin_id)=>{
         { $set: { password: securePass, token: "" } }
       );
 
-      res.render("AdminForget-password",{ admin_id:"undefined",message:"Successfully updated the Password. Please login"});
+      res.render("AdminForget-password",{ admin_id:"undefined",message:"Successfully updated the Password. Please login",color:"success"});
+      
     } catch (error) {
       console.log(error.message);
     }
@@ -270,33 +271,45 @@ const sendVerifyMail = async(name,email,admin_id)=>{
       if(req.query.page){
         page = req.query.page
       }
+      const statusFilter = req.query.status || '';
+      const query = {
+        $or: [
+          { firstName: { $regex: '.*' + search + '.*', $options: 'i' } },
+          { phoneNumber: { $regex: '.*' + search + '.*', $options: 'i' } },
+          { email: { $regex: '.*' + search + '.*', $options: 'i' } },
+        ],
+      };
+
+      if (statusFilter) {
+        switch (statusFilter) {
+          case 'verified':
+            query.is_verified = true;
+            break;
+          case 'not_verified':
+            query.is_verified = false;
+            break;
+          case 'blocked':
+            query.is_blocked = true;
+            break;
+          case 'not_blocked':
+            query.is_blocked = false;
+            break;
+        }
+      }
 
       const limit = 2;
-
-      const userData = await User.find({
-        $or:[
-          {firstName:{$regex:'.*'+search+'.*',$options:'i'}},
-          {phoneNumber:{$regex:'.*'+search+'.*',$options:'i'}},
-          {email:{$regex:'.*'+search+'.*',$options:'i'}}
-        ]
-      }).limit(limit * 1)
-      .skip((page-1)* limit)
+    const userData = await User.find(query)
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
       .exec();
 
-
-      const count = await User.find({
-        $or:[
-          {firstName:{$regex:'.*'+search+'.*',$options:'i'}},
-          {phoneNumber:{$regex:'.*'+search+'.*',$options:'i'}},
-          {email:{$regex:'.*'+search+'.*',$options:'i'}}
-        ]
-      }).countDocuments();
-
+    const count = await User.find(query).countDocuments();
 
       res.render('users',{
         users:userData,
         totalPages:Math.ceil(count/limit),
-        currentPage : page
+        currentPage : page,
+        currentPageName:'users'
       })
 
     }catch(error){
@@ -311,6 +324,7 @@ const sendVerifyMail = async(name,email,admin_id)=>{
       res.render('new-user')
     }catch(error){
       console.log(error.message);
+      res.render('new-user',{message: error.meessage})
     }
   }
 
@@ -331,9 +345,16 @@ const sendVerifyMail = async(name,email,admin_id)=>{
   const addUser = async(req,res)=>{
     try{
 
-      const existingUser = await User.findOne({email:req.body.email})
-        if (existingUser){
-          return res.render('new-user',{message:"Email already in Use!"})
+      const existingUserByEmail = await User.findOne({email:req.body.email})
+      const existingUserByMobile = await User.findOne({phoneNumber:req.body.phoneNumber})
+        if (existingUserByEmail && existingUserByEmail){
+          return res.render('new-user',{message:"Email and Mobile Number already in Use!",color:"danger"})
+        }else if(existingUserByEmail){
+          return res.render('new-user',{message:"Email already in Use!",color:"danger"})
+
+        }else if(existingUserByMobile){
+          return res.render('new-user',{message:"Mobile Number already in Use!",color:"danger"})
+
         }
       const lastUserId = await getLastUserId();
 
@@ -365,9 +386,9 @@ const sendVerifyMail = async(name,email,admin_id)=>{
       const userData = await user.save();
       if(userData){
         addUserMail(firstName,email,password,userData._id)
-        res.render('new-user',{message:"Successfully added user and User credential send to the email, Please verify email to access the website"});
+        res.render('new-user',{message:"Successfully added user and User credential send to the email, Please verify email to access the website",color:'success'});
       }else{
-        res.render('new-user',{message:"Something went wrong"})
+        res.render('new-user',{message:"Something went wrong",color:'danger'})
       }
 
     }catch(error){
@@ -378,7 +399,7 @@ const sendVerifyMail = async(name,email,admin_id)=>{
   const blockUser = async(req,res)=>{
     try{
       await User.findByIdAndUpdate(req.params.id,{is_blocked:true},{new:true})
-      res.redirect('/admin/dashboard')
+      res.redirect('/admin/users')
     }catch(error){
       console.log(error.message);
     }
@@ -387,7 +408,7 @@ const sendVerifyMail = async(name,email,admin_id)=>{
   const unblockUser = async(req,res)=>{
     try{
       await User.findByIdAndUpdate(req.params.id,{is_blocked:false},{new:true})
-      res.redirect("/admin/Dashboard")
+      res.redirect("/admin/users")
     }catch(error){
       console.log(error.message);
     }
@@ -433,11 +454,26 @@ const  addProductPost =async (req,res)=>{
 
   const insertAdmin = async(req,res)=>{
     try{
-        // to check the email already in user or not.
-        const existingAdmin = await Admin.findOne({email:req.body.email})
-          if (existingAdmin){
-                return res.render('Adminregistration',{message:"Email already in Use!"})
-          }
+        // to check the email already in user or not and number checking.
+        const minPasswordLength = 8;
+        if(req.body.password.length<minPasswordLength){
+            return res.render ('Adminregistration',{
+                message:`Password must be at least ${minPasswordLength}characters long`,
+                color: 'danger'
+            })
+        }
+
+        const existingAdminByEmail = await Admin.findOne({email:req.body.email})
+        const existingAdminByMoble = await Admin.findOne({phoneNumber:req.body.phoneNumber})
+            if (existingAdminByEmail && existingAdminByMoble){
+                return res.render('Adminregistration',{message:"Email and Mobile Number already in Use!",color:"danger"})
+            }else if(existingAdminByEmail){
+                return res.render('Adminregistration',{message:"Email already in Use!",color:"danger"})
+           }else if(existingAdminByMoble){
+            return res.render('Adminregistration',{message:"Mobile Number already in Use!",color:"danger"})
+           }
+
+
             const user_name = req.body.firstName +''+req.body.lastName; //compines first and last name.
             const spassword = await securePassword(req.body.password);
             
@@ -456,9 +492,9 @@ const  addProductPost =async (req,res)=>{
         const adminData = await newAdmin.save();
         if (adminData){
             sendVerifyMail(req.body.firstName,req.body.email,adminData._id)
-            res.render('adminRegistration',{message:"Your registration has been successful. Please verify Your Mail"});
+            res.render('adminRegistration',{message:"Your registration has been successful. Please verify Your Mail",color: "success"});
         }else{
-            res.render('adminRegistration',{message:"Your registration has been failed"});
+            res.render('adminRegistration',{message:"Your registration has been failed",color: 'danger'});
         }
 
     }catch(error){
@@ -494,15 +530,15 @@ const sendVerificationLink = async(req,res)=>{
         if(adminData.is_verified===false){
           
           sendVerifyMail(adminData.firstName,adminData.email,adminData._id);
-          res.render('email-verification',{message:"Resend Verification mail send to your mail id, Please Check"})
+          res.render('email-verification',{message:"Resend Verification mail send to your mail id, Please Check",color:"success"})
 
         }else{
-          res.render('email-verification',{message:"This email id is already verified!. so not need further verification"})
+          res.render('email-verification',{message:"This email id is already verified!. so not need further verification",color:"success"})
 
         }
            
       }else{
-          res.render('email-verification',{message:"This email is not Registered"})
+          res.render('email-verification',{message:"This email is not Registered",color:"danger"})
       }
 
   }catch(error){
@@ -511,10 +547,60 @@ const sendVerificationLink = async(req,res)=>{
 }
 
 
+//page no found.
+
+const pageNotfound = async(req,res)=>{
+  try{  
+     res.render('404',{message:"Error 404 Page Not Found", color: "danger"})
+  }catch(error){
+    console.log(error.message);
+  }
+}
+
+const orderListLoad = async(req,res)=>{
+  try{
+    const orders = await Order.find().sort({createdAt: -1}).populate('items.productId')
+    res.render('adminOrderList',{orders,currentPage:'orders'})
+
+  }catch(error){
+    console.log(error.message);
+  }
+}
+
+const changeOrderStatus =async(req,res)=>{
+  try{
+     const orderId = req.params.orderId;
+     const newStatus = req.body.status
+     const order = await Order.findById(orderId);
+     if(order){
+      order.orderStatus = newStatus;
+      await order.save();
+     }
+     res.redirect('/admin/orders')
+
+  }catch(error){
+    console.log(error.message);
+  }
+}
+
+const cancelOrder = async(req,res)=>{
+  try{
+    const orderId = req.params.orderId;
+    const order = await Order.findById(orderId);
+    if(order && order.orderStatus === 'Pending'){
+      order.orderStatus = 'Cancelled';
+      await order.save();
+    }
+    res.redirect('/admin/orders')
+    
+  }catch(error){
+    console.log(error.message);
+  }
+}
   module.exports = {
     loadLogin,
     verifyLogin,
-    loadAdminHome,
+    loadAdminDashboard,
     logout,
     forgetLoad,
     forgetVerify,
@@ -535,8 +621,11 @@ const sendVerificationLink = async(req,res)=>{
     insertAdmin,
     verifyMail,
     emailVerificationLoad,
-    sendVerificationLink
+    sendVerificationLink,
     
-    
+    pageNotfound,
+    orderListLoad,
+    cancelOrder,
+    changeOrderStatus
   };
 

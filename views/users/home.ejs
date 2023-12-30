@@ -1,7 +1,70 @@
 <%- include('../layouts/header.ejs') %>
+<title>Home</title>
 
-    <h1> Welcome to Home Page </h1>
+<style>
+a {
+  color: inherit; 
+  text-decoration: none; 
+}
 
-    <a href="/logout">Logout</a>
+a:hover {
+  text-decoration: none; 
+}
 
-<%- include('../layouts/footer.ejs')%>
+.card-img-top {
+  height: 200px; /* Set a fixed height for the card images */
+  object-fit: cover; /* Ensure the image covers the entire designated area */
+}
+</style>
+
+
+<!-- Display products -->
+<div class="container mt-4">
+  <h3 class="mb-4">Home-Products</h3>
+  <% if (typeof message !== 'undefined') { %>
+    <% if(color==='danger') { %>
+        <div class="alert alert-danger text-center" role="alert">
+            <p><%- message %></p>
+        </div>
+    <% } else { %>
+        <div class="alert alert-success text-center" role="alert">
+            <p><%- message %></p>
+        </div>
+    <% } %>
+  <% } %>
+
+  <div class="row">
+    <% products.forEach(product => { %>
+      <div class="col-lg-3 mb-4">
+        <div class="card h-100">
+          <!-- Link to productView page with productId -->
+          <a href="/product/<%= product._id %>">
+            <img src="/images/<%= product.images[0] %>" class="card-img-top" alt="<%= product.name %>">
+            <div class="card-body">
+              <h5 class="card-title"><%= product.name %></h5>
+              <p class="card-text"><%= product.description %></p>
+              <!-- Star Ratings -->
+              <div class="rating">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <% if (i <= product.rating) { %>
+                    <span class="fa fa-star checked"></span>
+                  <% } else { %>
+                    <span class="fa fa-star"></span>
+                  <% } %>
+                <% } %>
+              </div>
+              <br>
+              <p class="card-text">Price: <%= product.price %> INR</p>
+              <p class="card-text">Discount: <%= product.discount %> %</p>
+              <!-- Add to Cart button -->
+              <a href="/product/<%= product._id %>" class="btn btn-primary">View Details</a>
+            </div>
+          </a>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+</div>
+
+<%- include('../layouts/footer.ejs') %>
+

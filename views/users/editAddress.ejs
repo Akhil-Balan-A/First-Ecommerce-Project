@@ -1,0 +1,78 @@
+<%- include('../layouts/header') %>
+<title>Edit Address</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h3 class="mb-4">Edit Address</h3>
+        <% if (typeof message !== 'undefined') { %>
+            <% if(color==='danger') { %>
+                <div class="alert alert-danger text-center" role="alert">
+                    <p><%- message %></p>
+                </div>
+            <% } else { %>
+                <div class="alert alert-success text-center" role="alert">
+                    <p><%- message %></p>
+                </div>
+            <% } %>
+        <% } %>
+
+        <form action="/address/edit/<%= address._id %>" method="post">
+            <!-- Street -->
+            <div class="mb-3">
+                <label for="street" class="form-label">Street</label>
+                <input type="text" class="form-control" id="street" name="street" value="<%= address.street %>" required>
+            </div>
+
+            <!-- City -->
+            <div class="mb-3">
+                <label for="city" class="form-label">City</label>
+                <input type="text" class="form-control" id="city" name="city" value="<%= address.city %>" required>
+            </div>
+
+            <!-- State -->
+            <div class="mb-3">
+                <label for="state" class="form-label">State</label>
+                <input type="text" class="form-control" id="state" name="state" value="<%= address.state %>" required>
+            </div>
+
+            <!-- Zip Code -->
+            <div class="mb-3">
+                <label for="zipCode" class="form-label">Pin Code</label>
+                <input type="text" 
+                class="form-control" 
+                id="zipCode" 
+                name="zipCode" 
+                value="<%= address.zipCode %>" 
+                minlength="6"
+                maxlength="6"
+                pattern="[0-9]{6}" 
+                required>
+            </div>
+
+            <!-- Country -->
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input type="text" class="form-control" id="country" name="country" value="<%= address.country %>" required>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="mb-3">
+                <label for="phoneNumber" class="form-label">Phone Number</label>
+                <input type="tel" 
+                class="form-control" 
+                id="phoneNumber" 
+                name="phoneNumber" 
+                value="<%= address.phoneNumber %>" 
+                minlength="10"
+                maxlength="10"
+                pattern="[0-9]{10}" 
+                required>
+            </div>
+           
+            <br>
+            <button type="submit" class="btn btn-primary">Update Address</button>
+            <a href="/address" class="btn btn-primary">Go Back</a>
+        </form>
+    </div>
+    <br>
+<%- include('../layouts/footer') %>

@@ -1,0 +1,38 @@
+<%- include('../layouts/adminHeader.ejs') %>
+
+<title>Dashboard</title>
+</head>
+<body>
+  <br>
+  <h2 class="page-title mb-4">&nbsp;&nbsp; Dashboard</h2>
+  <div class="container-fluid mt-4">
+    <div class="row">
+      <!-- Left Sidebar -->
+      <div class="col-md-2" style="height: 100vh;">
+        <ul class="list-group">
+          <!-- Home Heading -->
+          <li class="list-group-item list-group-item-grey">Home</li>
+          <li class="list-group-item"><a href="/admin/dashboard"class="<%= currentPage === 'dashboard' ? 'active-link' : '' %>"><i class="fa-solid fa-house fa-icon" style="font-size: 14px; padding: 0px"></i>Dashboard</a></li>
+          <li class="list-group-item"><a href="/admin/sales-report"><i class="fa-solid fa-file-invoice "></i>&nbsp; Sales Report</a></li>
+
+          <!-- Controls Heading -->
+          <li class="list-group-item list-group-item-grey">Controls</li>
+          <li class="list-group-item"><a href="/admin/orders"><i class="fa-solid fa-clipboard-list"></i>&nbsp; Orders</a></li>
+          <li class="list-group-item"><a href="/admin/categories"><i class="fa-solid fa-layer-group" style="font-size: 14px; padding: 0px"></i>&nbsp; Category</a></li>
+          <li class="list-group-item"><a href="/admin/users"> <i class="fa-solid fa-users" style="font-size: 14px; padding: 0px"></i>&nbsp; Users</a></li>
+
+          <!-- Editing Functions Heading -->
+          <li class="list-group-item list-group-item-grey">View/Edit Functions</li>
+          <li class="list-group-item"><a href="/admin/products"><i class="fa-solid fa-store"></i>&nbsp; View/Edit Products</a></li>
+          <li class="list-group-item"><a href="/admin/coupons"><i class="fa-solid fa-ticket" style="font-size: 14px; padding: 0px"></i>&nbsp; View/Edit Coupon</a></li>
+          <li class="list-group-item"><a href="/admin/banners"><i class="fa-solid fa-receipt" style="font-size: 18px; padding: 0px"></i>&nbsp; View/Edit Banner</a></li>
+        </ul>
+      </div>
+
+      <!-- Right Content -->
+      <div class="col-md-10" style="height: 100vh;">
+        <!-- This is where the content of each page will go -->
+      </div>
+    </div>
+  </div>
+<%- include('../layouts/adminFooter.ejs') %>

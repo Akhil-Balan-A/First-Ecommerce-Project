@@ -1,0 +1,146 @@
+<%- include('../layouts/header') %>
+<title>Your Profile</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h3 class="mb-4">Your Profile</h3>
+
+        <!-- Display user details -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Username: <%= user.userName %></h5>
+                        <!-- You can add an image here if needed -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Email: <%= user.email %></h5>
+                        <!-- You can add an image here if needed -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Address Form -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4 class="card-title">Your Address</h4>
+                                <p>Edit address or add address</p>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- Add your image here if needed -->
+                                <img src="/siteImages/address.jpg" class="img-fluid" alt="address">
+                            </div>
+                        </div>
+                        
+                            <a href="/address" class="btn btn-primary">Add Address</a>
+                            
+                        
+                    </div>
+                </div>
+            </div>
+                         <!-- Edit Profile, name, mobile number, password, etc. -->
+
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4 class="card-title">Login & Security</h4>
+                                <p>Edit login, name, mobile and pssword</p>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- Add your image here if needed -->
+                                <img src="/siteImages/security.png" class="img-fluid" alt="profile">
+                            </div>
+                        </div>
+                            <a href="/Login&Security" class="btn btn-primary">Login & Security</a>
+                    </div>
+                </div>
+            </div>
+                
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4 class="card-title">Payment Options</h4>
+                                <p>Edit or view payment method</p>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- Add your image here if needed -->
+                                <img src="/siteImages/payment.jpg" class="img-fluid" alt="payment">
+                            </div>
+                        </div>
+                            <a href="/payment-options" class="btn btn-primary">View Payment Options</a>
+
+                    </div>
+                </div>
+            </div>
+                         <!-- Edit Profile, name, mobile number, password, etc. -->
+
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4 class="card-title">Your Orders</h4>
+                                <p>Track, return, or buy thing again</p>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- Add your image here if needed -->
+                                <img src="/siteImages/orders.jpg" class="img-fluid" alt="orders">
+                            </div>
+                        </div>
+                            <a href="/orders" class="btn btn-primary">Track Orders</a>
+
+                    </div>
+                </div>
+            </div>
+                
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4 class="card-title">My Stuff</h4>
+                                <p>Edit review,rating,my Wishlist,coupons and offers </p>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- Add your image here if needed -->
+                                <img src="/siteImages/offers.png" class="img-fluid" alt="payment">
+                            </div>
+                        </div>
+                        <form action="/my-stuff" method="get">
+                            <button type="submit" class="btn btn-primary">offers and more </button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+                         <!-- next card starts here -->
+
+            
+                
+        </div>
+
+    </div>
+    
+
+       
+
+          
+
+<%- include('../layouts/footer') %>

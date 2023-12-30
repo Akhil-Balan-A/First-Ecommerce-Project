@@ -1,0 +1,46 @@
+<%- include('../layouts/header') %>
+<title>Available Payment Methods</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h3 class="mb-4">Available Payment Methods</h3>
+         <!-- Display any success or error messages here -->
+         <% if (typeof message !== 'undefined') { %>
+            <% if(color==='danger') { %>
+              <div class="alert alert-danger text-center" role="alert">
+                <p><%- message %></p>
+              </div>
+            <% } else { %>
+              <div class="alert alert-success text-center" role="alert">
+                <p><%- message %></p>
+              </div>
+            <% } %>
+          <% } %>
+        <h5 class="mb-4">Select default payment method</h5>
+
+        <form action="/payment-options" method="post">
+            <% paymentMethods.forEach(method => { %>
+                <div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="defaultPaymentMethod"
+                        id="<%= `paymentMethod_${method}` %>"
+                        value="<%= method %>"
+                        <% if (method === user.defaultPaymentMethod) { %>checked<% } %>
+                    >
+                    <label class="form-check-label" for="<%= `paymentMethod_${method}` %>">
+                        <%= method %>
+                    </label>
+                </div>
+            <% }) %>
+            <div  style="position: relative;">
+                <!-- Save Changes Button -->
+            <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+            &nbsp;<a href="/profile" class="btn btn-primary position-absolute bottom-0" >Go to Profile</a>
+            </div>
+            
+        </form>
+    </div>
+    <br><br><br>
+<%- include('../layouts/footer') %>

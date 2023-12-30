@@ -1,9 +1,129 @@
-
 <%- include('../layouts/adminHeader.ejs') %>
+<style>
+   
+    #addNewProduct{
+        border-radius: 20px;
+    }
+
+</style>
+<title>Products</title>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+
+</head>
+<body>
+  <br>
+  <h2 class="page-title mb-4">&nbsp;&nbsp; Product List</h2>
+  <div class="container-fluid mt-4">
+    <div class="row">
+      <!-- Left Sidebar -->
+      <div class="col-md-2" style="height: 100vh;">
+        <ul class="list-group">
+          <!-- Home Heading -->
+          <li class="list-group-item list-group-item-grey">Home</li>
+          <li class="list-group-item"><a href="/admin/dashboard"><i class="fa-solid fa-house fa-icon" style="font-size: 14px; padding: 0px"></i>Dashboard</a></li>
+          <li class="list-group-item"><a href="/admin/sales-report"><i class="fa-solid fa-file-invoice "></i>&nbsp; Sales Report</a></li>
+
+          <!-- Controls Heading -->
+          <li class="list-group-item list-group-item-grey">Controls</li>
+          <li class="list-group-item"><a href="/admin/orders"><i class="fa-solid fa-clipboard-list"></i>&nbsp; Orders</a></li>
+          <li class="list-group-item"><a href="/admin/categories"><i class="fa-solid fa-layer-group" style="font-size: 14px; padding: 0px"></i>&nbsp; Category</a></li>
+          <li class="list-group-item"><a href="/admin/users"> <i class="fa-solid fa-users" style="font-size: 14px; padding: 0px"></i>&nbsp; Users</a></li>
+
+          <!-- Editing Functions Heading -->
+          <li class="list-group-item list-group-item-grey">View/Edit Functions</li>
+          <li class="list-group-item"><a href="/admin/products" class="<%= currentPage === 'products' ? 'active-link' : '' %>"><i class="fa-solid fa-store"></i>&nbsp; View/Edit Products</a></li>
+          <li class="list-group-item"><a href="/admin/coupons"><i class="fa-solid fa-ticket" style="font-size: 14px; padding: 0px"></i>&nbsp; View/Edit Coupon</a></li>
+          <li class="list-group-item"><a href="/admin/banners"><i class="fa-solid fa-receipt" style="font-size: 18px; padding: 0px"></i>&nbsp; View/Edit Banner</a></li>
+        </ul>
+      </div>
+
+      <!-- Right Content -->
+      <div class="col-md-10" style="height: 100vh;">
+        <div class="container mt-4">
+            <a href="/admin/products/add-product" class="btn btn-primary mb-4" id="addNewProduct">Add new Product</a>
+            
+            <% if(count>0){%>
+                
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Sl.No</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Discount</th>
+                        <th scope="col">Sell Price</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Images</th>
+                        <th scop="col">Action</th>
+                        <th scope="col">Edit/View</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% let serialNumber = 1; %>
+        
+                    <% products.forEach(function(product) { %>
+                        <tr>
+                            <td><%=serialNumber++  %></td> 
+                            <td><%= product.name %></td>
+                            <td><%= parseFloat(product.price).toFixed(2)%></td>
+                            <td><%= product.discount %>%</td>
+                            <td><%= product.sellingPrice %></td>
+                            <td><%= product.category %></td>
+                            <td><%= product.stockQuantity %></td>
+                            <td>
+                                <%if (product.images && product.images.length >0){%>
+                                     <%product.images.forEach(function(image){%>
+                                         <img style="width:50px; height: auto;" src="/images/<%= image %>">
+                                     <%})%>
+                                 <%}else{ %>
+                          
+                                     <img src="/images/noimage.png" alt="">
+                          
+                                 <%}%>
+                            </td>
+                            <td>
+                                <% if (!product.is_blocked) { %>
+                                      <a href="/admin/Block-product/<%= product._id %>"
+                                         onclick="return confirm('Do you want to block <%= product.name %> ?')"
+                                         class="btn btn-danger  btn-sm">Block</a>
+                                <% } else { %>
+                                      <a href="/admin/Unblock-product/<%= product._id %>"
+                                         class="btn btn-success  btn-sm">Unblock</a>
+                                <% } %>
+                            </td>
+                            <td><a href="/admin/products/edit-product/<%= product._id %>" class="btn btn-warning btn-sm">Edit/View</a></td>
+                            <td>
+                                <a href="#" class="btn btn-danger btn-sm confirmDeletion" onclick="confirmDeletion('<%= product._id %>')">Delete</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        
+            <%}else{%>
+                <h3 class="text-center">There are no products</h3>
+            <%}%>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function confirmDeletion(productId) {
+    // Use the synchronous window.confirm
+    var confirmDelete = window.confirm('Are you sure you want to delete this Product?');
+
+    // If the user confirms, navigate to the delete URL
+    if (confirmDelete) {
+        window.location.href = '/admin/products/delete-product/' + productId;
+    }
+}
 
 
-<h1> this is products page</h1>
-
-    
-
+</script>
 <%- include('../layouts/adminFooter.ejs') %>
+
+

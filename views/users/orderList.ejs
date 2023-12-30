@@ -1,0 +1,50 @@
+<%- include('../layouts/header') %>
+<title>Your Orders</title>
+
+<div class="container mt-5">
+    <h3 class="mb-4">Your Orders</h3>
+
+    <% if (orders && orders.length > 0) { %>
+        <% orders.forEach(order => { %>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Order ID: <%= order.trackingNumber %></h5>
+                    <p>Order Date: <%= order.createdAt.toDateString() %></p>
+                    <p>Total Amount: ₹<%= order.totalAmount.toFixed(2) %></p>
+                    <p>Order Status: <%= order.orderStatus %></p>
+                    <!-- Add a button to cancel the order -->
+                    <% if (order.orderStatus === 'Pending') { %>
+                        <form action="/orders/cancel/<%= order._id %>" method="post">
+                            <button type="submit" class="btn btn-danger">Cancel Order</button>
+                        </form>
+                    <% } %>
+                </div>
+                <div class="card-body">
+                    <h5>Order Items</h5>
+                    <ul class="list-group">
+                        <% order.items.forEach(item => { %>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="/images/<%= item.productId.images[0] %>" alt="<%= item.productId.name %>" class="img-fluid">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong><%= item.productId.name %></strong></p>
+                                        <p>Quantity: <%= order.totalItems %></p>
+                                        <p>Price: ₹<%= item.productId.sellingPrice.toFixed(2) %></p>
+                                        <!-- Add other item details as needed -->
+                                    </div>
+                                </div>
+                            </li>
+                        <% }) %>
+                    </ul>
+                </div>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p>No orders found.</p>
+    <% } %>
+
+</div>
+
+<%- include('../layouts/footer') %>

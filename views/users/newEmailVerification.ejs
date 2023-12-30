@@ -1,0 +1,69 @@
+
+<%- include('../layouts/header') %>
+
+
+    <title>User Verification</title>
+  
+
+  <body>
+    <!-- Content -->
+
+    <div class="container-xxl">
+      <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner py-4">
+          <!-- Forgot Password -->
+          <div class="card">
+            <div class="card-body">
+              <!-- Logo -->
+              <div class="app-brand justify-content-center">
+                <a href="/" class="app-brand-link gap-2">
+                  <span class="app-brand-logo demo">
+                    <img class="brand-logo-main" src="/Icon/brand logo.png" alt="img">
+                  </span>
+                  <span class="app-brand-text demo text-body fw-bold">Boult</span>
+                </a>
+              </div>
+              <!-- /Logo -->
+              <h4 class="mb-2">Enter Verification code</h4>
+              <p class="mb-4">For security we have sent the code to your new email id</p>
+              <% if (typeof message !== 'undefined') { %>
+                <% if(color==='danger') { %>
+                    <div class="alert alert-danger text-center" role="alert">
+                        <p><%- message %></p>
+                    </div>
+                <% } else { %>
+                    <div class="alert alert-success text-center" role="alert">
+                        <p><%- message %></p>
+                    </div>
+                <% } %>
+            <% } %>
+              <form id="formAuthentication" class="mb-3" action="/update-email" method="post">
+                <div class="mb-3">
+                  <label for="email" class="form-label">Code</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="code"
+                    name="code"
+                    required
+                    minlength="8"
+                    maxlength="8"
+                    placeholder="Enter your code here"
+                    autofocus>
+                    <input type="hidden" name="randomCode" value="<%=randomCode%>">
+                    <input type="hidden" name="newEmail" value="<%=newEmail%>">
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                  <button class="btn btn-primary d-grid w-100">Submit Code</button>
+                  <a href="/Login&Security" class="btn btn-secondary mt-2">Go Back</a>
+              </div>
+              
+                
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<%- include('../layouts/footer') %>

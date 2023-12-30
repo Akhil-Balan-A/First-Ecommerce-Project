@@ -1,3 +1,31 @@
-<h1>
-    <%= message %>
-</h1>
+<%- include('../layouts/adminHeader.ejs') %>
+
+<title>404</title>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="text-center">
+
+      
+        <% if (typeof message !== 'undefined') { %>
+            <% if(color==='danger') { %>
+                <div class="alert alert-danger text-center" role="alert">
+                    <p><%- message %></p>
+                </div>
+            <% } else { %>
+                <div class="alert alert-success text-center" role="alert">
+                    <p><%- message %></p>
+                </div>
+            <% } %>
+        <% } %>
+
+
+        <p>Return to <a href="/admin">Home</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+<br><br><br><br><br><br><br><br><br>
+
+
+<%- include('../layouts/adminFooter.ejs') %>

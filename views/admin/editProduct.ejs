@@ -1,0 +1,157 @@
+<%- include('../layouts/adminHeader.ejs') %>
+
+<title>Edit Product</title>
+</head>
+<body>
+  <br>
+  <h2 class="page-title mb-4">&nbsp;&nbsp; Edit Product</h2>
+  <div class="container-fluid mt-4">
+    <div class="row">
+      <!-- Left Sidebar -->
+      <div class="col-md-2" style="height: 220vh;">
+        <ul class="list-group">
+          <!-- Home Heading -->
+          <li class="list-group-item list-group-item-grey">Home</li>
+          <li class="list-group-item"><a href="/admin/dashboard"><i class="fa-solid fa-house fa-icon" style="font-size: 14px; padding: 0px"></i>Dashboard</a></li>
+          <li class="list-group-item"><a href="/admin/sales-report"><i class="fa-solid fa-file-invoice "></i>&nbsp; Sales Report</a></li>
+
+          <!-- Controls Heading -->
+          <li class="list-group-item list-group-item-grey">Controls</li>
+          <li class="list-group-item"><a href="/admin/orders"><i class="fa-solid fa-clipboard-list"></i>&nbsp; Orders</a></li>
+          <li class="list-group-item"><a href="/admin/categories"><i class="fa-solid fa-layer-group" style="font-size: 14px; padding: 0px"></i>&nbsp; Category</a></li>
+          <li class="list-group-item"><a href="/admin/users"> <i class="fa-solid fa-users" style="font-size: 14px; padding: 0px"></i>&nbsp; Users</a></li>
+
+          <!-- Editing Functions Heading -->
+          <li class="list-group-item list-group-item-grey">View/Edit Functions</li>
+          <li class="list-group-item"><a href="/admin/products"><i class="fa-solid fa-store"></i>&nbsp; View/Edit Products</a></li>
+          <li class="list-group-item"><a href="/admin/coupons"><i class="fa-solid fa-ticket" style="font-size: 14px; padding: 0px"></i>&nbsp; View/Edit Coupon</a></li>
+          <li class="list-group-item"><a href="/admin/banners"><i class="fa-solid fa-receipt" style="font-size: 18px; padding: 0px"></i>&nbsp; View/Edit Banner</a></li>
+        </ul>
+      </div>
+
+      <!-- Right Content -->
+      <div class="col-md-10" style="height: 220vh;">
+        <div class="container ">
+          <a href="/admin/products" class="btn btn-primary mb-4">Back to Products </a>
+         
+         
+          <% if (typeof message !== 'undefined') { %>
+            <% if(color==='danger') { %>
+                <div class="alert alert-danger text-center" role="alert">
+                    <p><%- message %></p>
+                </div>
+            <% } else { %>
+                <div class="alert alert-success text-center" role="alert">
+                    <p><%- message %></p>
+                </div>
+            <% } %>
+        <% } %>
+            
+          
+          <form action="/admin/products/edit-product/<%=products._id%>" method="post" enctype="multipart/form-data">
+              <div class="form-group">
+                  <label for="name">Name</label>
+                  <input type="text" class="form-control" name="name" value="<%=products.name%>"  placeholder="Enter Product Name" required minlength="2">
+              </div>
+          
+              <div class="form-group">
+                  <label for="description">Description</label>
+                  <textarea name="description" class="form-control" cols="30" rows="10" placeholder="Enter Product Description" required><%=products.description%></textarea>
+              </div>
+              <div class="form-group">
+                  <label for="category">Category</label>
+                  <select name="category" class="form-control">
+                      <%categories.forEach(function(cat){%>
+                        <option value="<%=cat.slug%>" <%=cat.slug===products.category ? 'selected' : ''%>><%=cat.name%></option>
+                      <%})%>
+      
+                  </select>
+              </div>
+              <div class="form-group">
+                <label for="stockQuantity">Stock Quantity</label>
+                <input type="number" class="form-control" name="stockQuantity" value="<%=products.stockQuantity%>" placeholder="Enter Quantity of Product" required >
+            </div>
+              <div class="form-group">
+                  <label for="price">Price</label>
+                  <input type="text" class="form-control" name="price" value="<%=products.price%>" placeholder="Enter Price" required>
+              </div>
+              <div class="form-group">
+                <label for="discount">Discount</label>
+                <input type="number" class="form-control" name="discount" value="<%=products.discount%>" placeholder="Enter Discount Percentage" required>
+            </div>
+              <div class="form-group">
+                <label for="image1">Image1</label>
+                <input type="file" class="form-control" name="images1" id="image1" required onchange="previewImage('image1','imgPreview1')">
+                <button style="font-size: 12px;" type="button" class="btn btn-danger" onclick="removeImage('image1','imgPreview1')">Remove File</button>
+                <br>
+                <img style="width:200px; height: auto;" src="#" id="imgPreview1"alt="" class="img-preview">
+              </div>
+              <div class="form-group">
+                <label for="image2">Image2</label>
+                <input type="file" class="form-control" name="images2" id="image2"  onchange="previewImage('image2','imgPreview2')">
+                <button style="font-size: 12px;" type="button" class="btn btn-danger" onclick="removeImage('image2','imgPreview2')">Remove File</button>
+                <br>
+                <img style="width:200px; height: auto;" src="#" id="imgPreview2" alt="" class="img-preview">
+              </div>
+              <div class="form-group">
+                <label for="image3">Image3</label>
+                <input type="file" class="form-control" name="images3" id="image3"  onchange="previewImage('image3','imgPreview3')">
+                <button style="font-size: 12px;" type="button" class="btn btn-danger" onclick="removeImage('image3','imgPreview3')">Remove File</button>
+                <br>
+                <img style="width:200px; height: auto;" src="#" id="imgPreview3" alt="" class="img-preview">
+              </div>
+              
+              <div class="form-group">
+                <button class="btn btn-primary">Update</button>
+      
+              </div>
+      
+          </form>
+      </div>
+      <br><br><br>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function previewImage(inputId,previewId){
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+      const file = input.files[0];
+  
+      if(file){
+        const reader = new FileReader();
+        reader.onload = function(e){
+          preview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }else{
+        preview.src = "";
+      }
+    }
+    function removeImage(inputId,previewId){
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+      input.value = "";
+      preview.src = "";
+    }
+  </script>
+  
+  
+  
+<%- include('../layouts/adminFooter.ejs') %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

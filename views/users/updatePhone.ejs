@@ -1,0 +1,58 @@
+<%- include('../layouts/header') %>
+
+<title>Edit Phone Number</title>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-lg-6 offset-lg-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Edit Phone Number</h5>
+          
+          <!-- Display any success or error messages here -->
+          <% if (typeof message !== 'undefined') { %>
+            <% if(color==='danger') { %>
+              <div class="alert alert-danger text-center" role="alert">
+                <p><%- message %></p>
+              </div>
+            <% } else { %>
+              <div class="alert alert-success text-center" role="alert">
+                <p><%- message %></p>
+              </div>
+            <% } %>
+          <% } %>
+
+          <form id="editPhoneForm" action="/update-phone" method="post">
+            <div class="mb-3">
+                <p>OLD PHONE NUMBER: <%=user.phoneNumber%></p>
+              <label for="newPhoneNumber" class="form-label">New Phone Number</label>
+              <input
+                type="tel"
+                class="form-control"
+                id="newPhoneNumber"
+                name="newPhoneNumber"
+                placeholder="Enter new phone number"
+                required
+                minlength="10"
+                maxlength="10"
+                pattern="[0-9]{10}"
+              >
+              <small style="color: #696cff;">Enter a 10-digit phone number (numbers only).</small>
+              <br>
+              <br>
+              <p>To verify your number, we will send you a text mail with a temporary code. 
+                confirm the same for verification.</p>
+            </div>
+            <!-- Add any additional input fields or validations as needed -->
+
+            <button type="submit" class="btn btn-primary">Continue</button>
+            <a href="/Login&Security" class="btn btn-danger">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br><br>
+
+<%- include('../layouts/footer') %>

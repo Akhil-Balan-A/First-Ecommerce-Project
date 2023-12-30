@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
-    productName:{
+    name:{
         type: String,
         required: true
+    },
+    slug:{
+        type:String,
+        required:true
     },
 
     description:{
@@ -11,75 +15,67 @@ const productSchema = new mongoose.Schema({
         required:true
     },
     category:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Category',
-        required: true
-    },
-    color1: {
-        type: String,
-        required: true
-    },
-    color2: {
-        type: String,
+        type:String,
         required:true
-
-    },
-    category:{
-        type: String,
-        required: true
-    },
-    imagesDetails:{
+      },
+   
+    images: {
         type: Array,
-        required: true
+        required: true,
+        validate:[imageLimit,'You can pass only 3 product images']
     },
     price:{
         type:Number,
         required: true,
-        min: [0, 'price must be a positive number']
 
+    },
+    sellingPrice:{
+        type:Number,
+        required: true,
     },
     stockQuantity:{
         type: Number,
         required: true,
-        min: [0, 'Quantity must be a positive number']
 
     },
-    OrderQuantity:{
-        type: Number,
-        required: true,
-        min: [1, 'Quantity must be a positive number']
 
-    },
-    deleteProduct:{
-        type:Boolean,
-        default:false
-    },
     review:{
         type: String,
         
     },
     rating:{
         type: Number,
-        default: 0,
-        min: [0, 'Rating must be a non-negative number'],
-        max: [5, 'Rating must be between 0 and 5']
+        default: 2,
+       
     },
     discount:{
         type: Number,
-        default: 0,
-        min: [0, 'Discount must be a non-negative number'],
-        max: [100, 'Discount must be between 0 and 100']
+        required:true
+     
     },
-    activities: {
-        type: [String], // Array of strings representing activities
-        required: true
+    is_blocked:{
+        type:Boolean,
+        default:false
+    },
+    isWishlisted:{
+        type:Boolean,
+        default:false
+    },
+    isOnCart:{
+        type:Boolean,
+        default:false
+    },
+    trending:{
+        type:Boolean,
+        default:false
     }
 
-},
-{
-    timestamps: true
+},{timestamps:true});
+
+function imageLimit(val){
+    return val.length <=3
 }
-)
+
 
 const productModel = mongoose.model('Products',productSchema)
 

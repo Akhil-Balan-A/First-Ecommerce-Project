@@ -1,26 +1,28 @@
 const express = require("express");
+const session = require('express-session');
+
 const dotenv = require('dotenv').config()
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
 const dbConnect = require('./config/dbConnect')
+const cartItemCount = require('./middlewares/cartItemsCount')
 dbConnect();
-const expressValidator = require('express-validator');
-const flash = require('connect-flash');
+const path = require('path')
+
+
 
 const app = express();
 
-app.use(express.static('public'))
+
+app.use(session({
+    secret:process.env.SESSIONSECRET,
+    resave:false,
+    saveUninitialized:true,
+    cookie:{maxAge: 600000}
+}));
+
+app.use(express.static(path.join(__dirname,'./public')))
 app.use(express.urlencoded({ extended: false }));
-// app.use(expressValidator()); 
-
-
-app.use(flash());
-app.use(function (req, res, next) {
-  res.locals.messages = require('express-messages')(req, res);
-  next();
-});
-
-
-
+  
 app.use((req, res, next) => {
     res.set(
         "Cache-control",
@@ -30,10 +32,12 @@ app.use((req, res, next) => {
 });
 
 
+app.use(cartItemCount)
 
 //for user routes.
 const userRoute = require('./routes/userRoute');
 app.use('/',userRoute);
+
 
 
 //for admin routes.
@@ -45,12 +49,14 @@ app.use('/admin',adminRoute);
 app.use(notFound);
 app.use(errorHandler);
 
-
 const port = process.env.PORT || 3000;
 
 app.listen(port,()=>{
     console.log(`Server Running on the port number ${port}`);
 });
+
+
+
 
 
 

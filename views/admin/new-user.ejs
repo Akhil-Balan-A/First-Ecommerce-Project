@@ -1,33 +1,113 @@
 <%- include('../layouts/adminHeader.ejs') %>
 
-<div class="container mt-5 col-md-5">
-  <h1>Add New User</h1>
+<title>Add User</title>
+</head>
+<body>
+  <br>
+  <h2 class="page-title mb-4">&nbsp;&nbsp; Dashboard</h2>
+  <div class="container-fluid mt-4">
+    <div class="row">
+      <!-- Left Sidebar -->
+      <div class="col-md-2" style="height: 100vh;">
+        <ul class="list-group">
+          <!-- Home Heading -->
+          <li class="list-group-item list-group-item-grey">Home</li>
+          <li class="list-group-item"><a href="/admin/dashboard"><i class="fa-solid fa-house fa-icon" style="font-size: 14px; padding: 0px"></i>Dashboard</a></li>
+          <li class="list-group-item"><a href="/admin/sales-report"><i class="fa-solid fa-file-invoice "></i>&nbsp; Sales Report</a></li>
 
-  <form action="/admin/new-user" method="post">
-    <div class="mb-3">
-      <input type="text" class="form-control" name="firstName" placeholder="Enter First Name" required>
+          <!-- Controls Heading -->
+          <li class="list-group-item list-group-item-grey">Controls</li>
+          <li class="list-group-item"><a href="/admin/orders"><i class="fa-solid fa-clipboard-list"></i>&nbsp; Orders</a></li>
+          <li class="list-group-item"><a href="/admin/categories"><i class="fa-solid fa-layer-group" style="font-size: 14px; padding: 0px"></i>&nbsp; Category</a></li>
+          <li class="list-group-item"><a href="/admin/users"> <i class="fa-solid fa-users" style="font-size: 14px; padding: 0px"></i>&nbsp; Users</a></li>
+
+          <!-- Editing Functions Heading -->
+          <li class="list-group-item list-group-item-grey">View/Edit Functions</li>
+          <li class="list-group-item"><a href="/admin/products"><i class="fa-solid fa-store"></i>&nbsp; View/Edit Products</a></li>
+          <li class="list-group-item"><a href="/admin/coupons"><i class="fa-solid fa-ticket" style="font-size: 14px; padding: 0px"></i>&nbsp; View/Edit Coupon</a></li>
+          <li class="list-group-item"><a href="/admin/banners"><i class="fa-solid fa-receipt" style="font-size: 18px; padding: 0px"></i>&nbsp; View/Edit Banner</a></li>
+        </ul>
+      </div>
+
+      <!-- Right Content -->
+      <div class="col-md-10" style="height: 100vh;">
+        <!-- This is where the content of each page will go -->
+        <div class="container mt-5 col-md-5">
+          <h1>Add New User</h1>
+        
+          <form action="/admin/new-user" method="post">
+            <div class="mb-3">
+              <input
+              type="text"
+              class="form-control"
+              id="firstName"
+              name="firstName"
+              placeholder="Enter your First Name"
+              required
+              minlength="2"
+              maxlength="20"
+              autofocus />            </div>
+        
+            <div class="mb-3">
+              <input
+              type="text"
+              class="form-control"
+              id="lastName"
+              name="lastName"
+              placeholder="Enter your lastName"
+              required 
+              minlength="2"
+              maxlength="20"
+              autofocus />            
+            </div>
+        
+            <div class="mb-3">
+              <input type="email" 
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  required
+                  minlength="5"
+                  maxlength="50"/>
+            </div>
+        
+            <div class="mb-3">
+              <input type="tel" 
+                  class="form-control"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  placeholder="Enter your Phone Number"
+                  required
+                  minlength="10"
+                  maxlength="10"
+                  pattern="[0-9]{10}"/>
+            </div>
+        
+            <button type="submit" class="btn btn-primary">Add User</button>
+          </form>
+        
+          <% if (typeof message !== 'undefined') { %>
+            <% if(color==='danger') { %>
+                <div class="alert alert-danger" role="alert">
+                    <p><%- message %></p>
+                </div>
+            <% } else { %>
+                <div class="alert alert-success" role="alert">
+                    <p><%- message %></p>
+                </div>
+            <% } %>
+        <% } %>
+        
+        </div>
+        
+      </div>
     </div>
+  </div>
+<%- include('../layouts/adminFooter.ejs') %>
 
-    <div class="mb-3">
-      <input type="text" class="form-control" name="lastName" placeholder="Enter Last Name" required>
-    </div>
 
-    <div class="mb-3">
-      <input type="email" class="form-control" name="email" placeholder="Enter Email" required>
-    </div>
 
-    <div class="mb-3">
-      <input type="text" class="form-control" name="phoneNumber" placeholder="Enter Phone Number" required>
-    </div>
 
-    <button type="submit" class="btn btn-primary">Add User</button>
-  </form>
 
-  <% if(typeof message !== 'undefined') { %>
-    <p class="mt-3" style="color: rgb(128, 58, 0);"><%- message %></p>
-  <% } %>
 
-  <a class="mt-3 btn btn-secondary" href="/admin/dashboard">Go Back</a>
-</div>
-
-<% include('../layouts/adminFooter.ejs') %>

@@ -1,0 +1,56 @@
+<%- include('../layouts/header.ejs') %>
+<title>Category</title>
+<style>
+  a {
+  color: inherit; /* Use the color of the parent element */
+  text-decoration: none; /* Remove underline */
+}
+
+a:hover {
+  text-decoration: none; /* Remove underline on hover */
+}
+
+.card-img-top {
+  height: 200px; /* Set a fixed height for the card images */
+  width: 100%; /* Ensure the image takes the full width of its container */
+  object-fit: contain; /* Ensure the entire image is visible within the specified dimensions */
+}
+</style>
+
+<!-- Display categories -->
+<div class="container mt-4">
+  <% categories.forEach(category => { %>
+    <h2 class="mb-3"><%= category.name %></h2>
+    <div class="row">
+      <% products.filter(product => product.category === category.slug).forEach(product => { %>
+        <div class="col-lg-3 mb-4">
+          <div class="card h-100">
+            <a href="/product/<%= product._id %>">
+              <img src="/images/<%= product.images[0] %>" class="card-img-top" alt="<%= product.name %>">
+              <div class="card-body">
+                <h5 class="card-title"><%= product.name %></h5>
+                <p class="card-text"><%= product.description %></p>
+                <!-- Star Ratings -->
+                <div class="rating">
+                  <% for (let i = 1; i <= 5; i++) { %>
+                    <% if (i <= product.rating) { %>
+                      <span class="fa fa-star checked"></span>
+                    <% } else { %>
+                      <span class="fa fa-star"></span>
+                    <% } %>
+                  <% } %>
+                </div>
+                <br>
+                <p class="card-text">Price: <%= product.price %> INR</p>
+                <p class="card-text">Discount: <%= product.discount %> %</p>
+                <a href="#" class="btn btn-primary">Add to Cart</a>
+              </div>
+            </a>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% }); %>
+</div>
+
+<%- include('../layouts/footer.ejs') %>

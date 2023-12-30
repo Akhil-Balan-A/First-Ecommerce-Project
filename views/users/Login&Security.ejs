@@ -1,0 +1,85 @@
+<%- include('../layouts/header') %>
+<title>Login & Security</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h3 class="mb-4">Update Login & Security</h3>
+
+            <!-- Display any success or error messages here -->
+            <% if (typeof message !== 'undefined') { %>
+                <% if(color==='danger') { %>
+                  <div class="alert alert-danger text-center" role="alert">
+                    <p><%- message %></p>
+                  </div>
+                <% } else { %>
+                  <div class="alert alert-success text-center" role="alert">
+                    <p><%- message %></p>
+                  </div>
+                <% } %>
+              <% } %>
+
+        <div class="row">
+            <!-- First Name Edit -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Name: </h5>
+                        
+                         <div class="mb-3">
+                            <p>Update First Name and Last Name</p>
+                            <p><%=user.firstName%> <%=user.lastName%></p>
+                        </div>
+                            <a href="/edit-name" class="btn btn-primary">Edit</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email Edit -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">E-mail:</h5>
+                        <div class="mb-3">
+                            <p>Update Email</p>
+                            <p><%=user.email%></p>
+                        </div>
+                        <a href="/verify-newEmail" class="btn btn-primary">Edit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Primary Mobile Number Edit -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Mobile Number:</h5>
+                           
+                            <div class="mb-3">
+                                <p>Update Mobile Number</p>
+                                <p><%=user.phoneNumber%></p>
+                            </div>
+                            <a href="/update-phone" class="btn btn-primary">Edit</a>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password Edit -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Password:</h5>
+                            <div class="mb-3">
+                                <p>Update Password</p>
+                                <p>**********</p>
+                            </div>
+                            <a href="/update-password" class="btn btn-primary">Edit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<%- include('../layouts/footer') %>
